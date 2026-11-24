@@ -1,0 +1,17 @@
+# Unity generated
+Library/
+Temp/
+Logs/
+UserSettings/
+
+# IDE files
+.vscode/
+*.csproj
+*.sln
+*.slnx
+*.user
+*.userprefs
+
+# OS files
+.DS_Store
+Thumbs.db
