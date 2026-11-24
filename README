@@ -1,1 +1,168 @@
-HI
+# Q-Learning Breakout AI
+
+A 2D Breakout-style game developed in Unity, featuring an autonomous paddle controlled by a Reinforcement Learning agent using tabular Q-Learning.
+
+The project explores how an AI agent can learn to play a game through trial and error, using rewards and penalties to improve its decision-making over multiple episodes.
+
+## How to Run
+
+1. Clone or download this repository.
+2. Open Unity Hub.
+3. Select **Add Project from Disk**.
+4. Navigate to the downloaded project folder.
+5. Open the project using a compatible Unity version.
+6. Open the main game scene.
+7. Press Play to run the game.
+
+### Running the AI
+
+- Enable the AI Manager in the scene.
+- Make sure the Q-Learning agent is configured correctly.
+- Enable training if you want the agent to continue learning.
+- Disable training to demonstrate the saved policy without updating the Q-Table.
+
+### Manual Gameplay
+
+Disable the AI Manager and enable player control to play manually.
+## Project Overview
+
+The game consists of a ball, a paddle, and a grid of destructible bricks. The AI controls the paddle by observing the ball's position and movement, selecting actions, and learning from the outcomes.
+
+Instead of relying on predefined movement rules, the agent learns a policy through repeated gameplay.
+
+The project also includes a manual control mode, allowing the game to be played without the AI.
+
+## Features
+
+- Autonomous paddle movement using Q-Learning.
+- Discrete state representation of the ball and paddle.
+- Epsilon-greedy action selection for balancing exploration and exploitation.
+- Reward-based learning system.
+- Persistent Q-Table storage using JSON.
+- Adjustable training settings through the Unity Inspector.
+- Manual and AI-controlled gameplay modes.
+- Predicted ball landing position for visual debugging.
+
+## AI Implementation
+
+### 1. State Representation
+
+The agent observes the game environment and converts continuous game values into discrete states.
+
+The state consists of four components:
+
+| State Variable | Description |
+|---|---|
+| Relative X Position | Horizontal distance between the ball and paddle |
+| Ball Height | Vertical distance of the ball above the paddle |
+| Horizontal Velocity | Whether the ball is moving left, right, or nearly vertically |
+| Vertical Velocity | Whether the ball is moving upward or downward |
+
+These values are divided into discrete bins to create a manageable state space.
+
+The current implementation supports up to 390 possible states, with three available actions per state.
+
+### 2. Available Actions
+
+The agent can choose from three actions:
+
+- Move Left
+- Stay
+- Move Right
+
+### 3. Reward System
+
+The agent receives rewards and penalties based on its interactions with the game.
+
+| Event | Reward |
+|---|---:|
+| Breaking a brick | +5 |
+| Hitting the ball with the paddle | +1 |
+| Missing the ball | -10 |
+| Each decision step | -0.01 |
+
+These values are configurable and can be adjusted to experiment with different learning behaviours.
+
+### 4. Q-Learning Algorithm
+
+The agent uses the standard Q-Learning update rule:
+
+`Q(s,a) = Q(s,a) + α [r + γ max Q(s',a') - Q(s,a)]`
+
+Where:
+
+- `Q(s,a)` represents the current Q-value.
+- `α` is the learning rate.
+- `γ` is the discount factor.
+- `r` is the immediate reward.
+- `s'` is the next state.
+
+The agent updates its Q-values based on the reward received and the estimated future reward of the next state.
+
+### 5. Exploration and Exploitation
+
+The agent uses an epsilon-greedy strategy:
+
+- Exploration: Selects a random action to discover new strategies.
+- Exploitation: Selects the action with the highest learned Q-value.
+
+Epsilon gradually decreases during training, allowing the agent to transition from exploration toward using its learned policy.
+
+### 6. Persistent Learning
+
+The learned Q-Table is saved in JSON format.
+
+This allows the agent to retain its learned values between game sessions instead of starting from scratch every time.
+
+The training configuration also supports disabling learning and exploration so the saved policy can be demonstrated without modifying the trained model.
+
+## Technologies Used
+
+- Unity 2D
+- C#
+- Reinforcement Learning
+- Tabular Q-Learning
+- JSON Serialization
+
+## Project Structure
+
+The project is organized into separate scripts for gameplay, AI logic, and visualization.
+
+|         Script      |                                  Responsibility                              |
+|---------------------|------------------------------------------------------------------------------|
+| `QLearningAgent.cs` | State observation, action selection, Q-value updates, and Q-Table management |
+| `PaddleLogic.cs`    | Paddle movement and collision handling                                       |
+| `BallLogic.cs`      | Ball movement and collision behaviour                                        |
+| `BrickLogic.cs`     | Brick destruction and reward handling                                        |
+| `GameOver.cs`       | Episode termination and game-over handling                                   |
+| `ScoreKeeper.cs`    | Score management                                                             |
+| `SpawnBricks.cs`    | Brick generation                                                             |
+| `PredictionDot.cs`  | Visualization of the predicted ball landing position                         |
+
+## Training and Results
+
+The agent was trained through repeated gameplay episodes.
+
+During training, it gradually improved its ability to position the paddle and intercept the ball.
+
+In one recorded training session, the agent achieved:
+
+- 32 bricks broken in a single episode.
+- 38 paddle-ball contacts across six recorded episodes.
+- An exploration rate (epsilon) of approximately 0.06.
+
+The game contains 84 bricks per board, so these results represent training progress rather than a complete solution.
+
+## Future Improvements
+
+- Improve learning efficiency and convergence.
+- Experiment with alternative state representations.
+- Evaluate performance over larger numbers of episodes.
+- Compare different reward structures.
+- Explore Deep Q-Networks (DQN) for continuous state representation.
+
+## Learning Objectives
+
+This project was developed to explore practical applications of Reinforcement Learning and understand how an agent can learn behaviour through interaction with an environment.
+
+It demonstrates the implementation of a tabular Q-Learning algorithm within a Unity game environment, including state discretization, reward design, exploration strategies, and persistent model storage.
